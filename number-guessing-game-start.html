@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Number guessing game</title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+      <h1>Number guessing game</h1>
+
+      <p>We have selected a random number between 1 and 100. See if you can guess it in 10 turns or fewer. We'll tell you if your guess was too high or too low.</p>
+
+<div class="form">
+  <label for="guessField">Enter a guess: </label><input type="text" id="guessField" class="guessField">
+  <input type="submit" value="Submit guess" class="guessSubmit">
+</div>
+
+<div class="resultParas">
+  <p class="guesses"></p>
+  <p class="lastResult"></p>
+  <p class="lowOrHi"></p>
+</div>
+
+<script>
+// Sets the variable that determines the random number
+var randomNumber = Math.floor(Math.random() * 100) + 1;
+// Enables JS to alter HTML elements (DOM manipulation)
+var guesses = document.querySelector('.guesses');
+var lastResult = document.querySelector('.lastResult');
+var lowOrHi = document.querySelector('.lowOrHi');
+// Enables JS to alter HTML elements (DOM manipulation)
+var guessSubmit = document.querySelector('.guessSubmit');
+var guessField = document.querySelector('.guessField');
+
+var guessCount = 1;
+var resetButton;
+// Determines the function for inputing guesses
+function checkGuess() {
+// Determines that the variable named userGuess is equal to the input value of the user
+  var userGuess = Number(guessField.value);
+// Once the user have made one input the guessCount becomes 1 and the text "Previous guesses:" appear
+  if (guessCount === 1) {
+    guesses.textContent = 'Previous guesses: ';
+  }
+// After a value gets entered in the guessField it appears after "Previous guesses:" showing the user its previous inputs
+  guesses.textContent += userGuess + ' ';
+// Once the input value is equal to the randomNumber determined earlier the text that shows the user has won appears and the div lowOrHi is empty
+  if (userGuess === randomNumber) {
+    lastResult.textContent = 'Congratulations! You got it right!';
+    lastResult.style.backgroundColor = 'green';
+    lowOrHi.textContent = '';
+// The function setGameOver gets called once userGuess is equal to randomNumber
+    setGameOver();
+// If guessCount is equal to 10 the game is over and also calles the function setGameOver
+  } else if (guessCount === 10) {
+    lastResult.textContent = '!!!GAME OVER!!!';
+    setGameOver();
+// If the game isnt won or lost the div lowOrHi is displayed showing you different texts depending on if the userGuess is higher or lower than the randomNumber
+  } else {
+    lastResult.textContent = 'Wrong!';
+    lastResult.style.backgroundColor = 'red';
+    if(userGuess < randomNumber) {
+      lowOrHi.textContent = 'Last guess was too low!';
+    } else if(userGuess > randomNumber) {
+      lowOrHi.textContent = 'Last guess was too high!';
+    }
+  }
+
+// Here the script adds 1 to the guessCount by incrementing the value with the (++) operation, it also clears the guessField and keeps the focus on the guessField
+  guessCount++;
+  guessField.value = '';
+  guessField.focus();
+}
+// This line calls the checkGuess function once the guessSubmit button is being clicked
+guessSubmit.addEventListener('click', checkGuess);
+
+// Here we determine what the function setGameOver does that we used earlier. First it disables the possibility to input more values in the guessField and it also disables the guessSubmit button. The second part of the setGameOver function is that it adds a new button called resetButton with a discription. It also calls the function resetGame once being clicked
+function setGameOver() {
+  guessField.disabled = true;
+  guessSubmit.disabled = true;
+  resetButton = document.createElement('button');
+  resetButton.textContent = 'Start new game';
+  document.body.appendChild(resetButton);
+  resetButton.addEventListener('click', resetGame);
+}
+
+// This function again sets the guessCount at 1, removes all of the information paragraphs and removes the resetButton. It also re enables the guessField and guessSubmit, clears the guessField and sets the focus on guessField. The last thing it does is remove the background color from the last result paragraph and asigns a new value to randomNumber
+function resetGame() {
+  guessCount = 1;
+
+  var resetParas = document.querySelectorAll('.resultParas p');
+  for (var i = 0 ; i < resetParas.length ; i++) {
+    resetParas[i].textContent = '';
+  }
+
+  resetButton.parentNode.removeChild(resetButton);
+
+  guessField.disabled = false;
+  guessSubmit.disabled = false;
+  guessField.value = '';
+  guessField.focus();
+
+  lastResult.style.backgroundColor = 'white';
+
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+}
+
+</script>
+</body>
+</html>
